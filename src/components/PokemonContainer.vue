@@ -2,8 +2,8 @@
   <div class="container">
     <PokemonSearch />
     <h3>Pokémons</h3>
-    <div class="container-box" v-for="pokemon in pokemons" :key="pokemon.id">
-      <PokemonCard :pokemon="pokemon"/>
+    <div class="container-box">
+      <PokemonCard v-for="pokemon in pokemons" :key="pokemon.id" :pokemon="pokemon"/>
     </div>
   </div>
 </template>
@@ -31,8 +31,8 @@ export default {
   },
 
   methods: {
-    fetchAllData() {
-      fetch('https://pokeapi.co/api/v2/pokemon/?offset=0&limit=24"')
+    fetchAllData(url) {
+      fetch(url)
         .then(res => res.json())
         .then(data => {
           this.nextUrl = data.next;
@@ -58,7 +58,7 @@ export default {
   },
 
   mounted() {
-    this.fetchAllData();
+    this.fetchAllData(this.currentUrl);
   }
 
   
