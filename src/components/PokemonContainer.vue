@@ -31,34 +31,25 @@ export default {
   },
 
   methods: {
-    fetchAllData(url) {
+    async fetchData(url) {
       fetch(url)
         .then(res => res.json())
-        .then(data => {
+        .then(async data => {
           this.nextUrl = data.next;
-          data.results.forEach( pokemon => {
-            this.fetchPokemonData(pokemon);
-          })
+          const pokemons = data.results;
+          for (const pokemon of pokemons){
+            pokemon.data = await fetch(pokemon.url).then(res => res.json())
+          }
+          this.pokemons = [...pokemons];
         })
         .catch((error) => {
           console.log(error);
         })
     },
-    fetchPokemonData(pokemon) {
-      let url = pokemon.url;
-      fetch(url)
-        .then(res => res.json())
-        .then( pokemon => {
-          this.pokemons.push(pokemon)
-        })
-        .catch((error) => {
-          console.log(error);
-        })  
-    }
   },
 
   mounted() {
-    this.fetchAllData(this.currentUrl);
+    this.fetchData(this.currentUrl);
   }
 
   

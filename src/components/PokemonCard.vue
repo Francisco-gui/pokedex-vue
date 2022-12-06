@@ -1,11 +1,11 @@
 <template>
   <div>
     <div class="card-container">
-      <img :src="pokemon.sprites.front_default" alt="pokemon-image">
+      <img :src="pokemon.data.sprites.front_default" alt="pokemon-image">
       <p>{{ pokemon.name }}</p>
-      <span>Cód: {{ pokemon.id }}</span>
+      <span>Cód: {{ pokemon.data.id }}</span>
       <div class="card-attributes">
-        <div v-for="(tipo, index) in pokemon.types" :key="index" :class="tipo.type.name">
+        <div v-for="(tipo, index) in pokemon.data.types" :key="index" :class="tipo.type.name">
           {{ tipo.type.name.toUpperCase() }}
         </div>
       </div>
@@ -66,7 +66,7 @@ export default {
     display: flex;
     align-items: center;
     justify-content: center;
-    margin: 4px;
+    margin: 2px;
     width: 64px;
     height: 16px;
     color: #ffff;
