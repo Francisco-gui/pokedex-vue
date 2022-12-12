@@ -1,5 +1,5 @@
 <template>
-  <input type="search" placeholder="Pesquise por nome ou código" class="search">
+  <input type="search" placeholder="Pesquise por nome ou código" class="search" @blur="$emit('search', $event.target.value)">
 </template>
 
 <script>

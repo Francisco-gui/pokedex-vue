@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="card-container">
+    <div class="card-container" @click="$emit('showDetail', pokemon.data.id)">
       <img :src="pokemon.data.sprites.front_default" alt="pokemon-image">
       <p>{{ pokemon.name }}</p>
       <span>Cód: {{ pokemon.data.id }}</span>
@@ -23,11 +23,6 @@ export default {
   props: {
     pokemon: Object,
   },
-
-  computed: {
-
-  }
-
 }
 </script>
 
