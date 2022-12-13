@@ -11,8 +11,13 @@
     </div>
     <div class="pokemon-detail">
       <p>Habilidades</p>
+      <div v-for="(habilidade, index) in pokemon.habilidade" :key="index">
+        <hr>
+        <span>{{ habilidade.effect_entries[1].effect }}</span>
+      </div>
+
     </div>
-    <button @click="$emit('details')">voltar</button>
+    <button @click="$emit('details')" class="btn-voltar">Voltar</button>
   </div>
 </template>
 
@@ -37,10 +42,16 @@ export default {
       if(!id) {
         return;
       }
-      const pokemon = await fetch('https://pokeapi.co/api/v2/pokemon/'+id)
+      await fetch('https://pokeapi.co/api/v2/pokemon/'+id)
         .then(res => res.json())
-      this.pokemon = {...pokemon};
-      console.log(this.pokemon);
+        .then(async data => {
+          const pokemon = data;
+          pokemon.habilidade = [];
+          for (const habilidade of data.abilities) {
+            pokemon.habilidade.push(await fetch(habilidade.ability.url).then(res => res.json()))
+          }
+          this.pokemon = {...pokemon};
+        })
     },
   },
 
@@ -100,8 +111,10 @@ export default {
 
   .pokemon-detail {
     width: 540px;
-    height: 220px;
+    max-height: 420px;
     margin: 0 auto;
+    padding: 6px;
+    padding-bottom: 10px;
     border-radius: 8px;
     box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.05);
     background: #ffff;
@@ -110,7 +123,30 @@ export default {
   .pokemon-detail p {
     font-size: 14px;
     font-weight: 700;
-    padding-top: 22px;
+    padding-top: 16px;
+  }
+
+  .pokemon-detail span {
+    font-size: 12px;
+    font-weight: 400;
+    color: #616161;
+  }
+
+  .pokemon-detail hr {
+    margin: 16px 0;
+    border: 1px solid #F1F4F5;
+  }
+
+  .btn-voltar {
+    background:none;
+    border:none;
+    margin:0;
+    padding:0;
+    cursor: pointer;
+    margin-top: 48px;
+    color: #00A3FF;
+    font-weight: 700;
+    font-size: 14px;
   }
 
 
