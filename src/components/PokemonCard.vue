@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="pokemon">
     <div class="card-container" @click="$emit('showDetail', pokemon.data.id)">
       <img :src="pokemon.data.sprites.front_default" alt="pokemon-image">
       <p>{{ pokemon.name }}</p>
@@ -37,6 +37,7 @@ export default {
     background-color: #ffff;
     border-radius: 8px;
     margin-bottom: 31px;
+    cursor: pointer;
   }
   .card-container img {
     margin-top: 12px;

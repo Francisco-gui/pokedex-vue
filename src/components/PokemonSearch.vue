@@ -1,5 +1,5 @@
 <template>
-  <input type="search" placeholder="Pesquise por nome ou código" class="search" @blur="$emit('search', $event.target.value)">
+  <input type="search" placeholder="Pesquise por nome ou código" class="search" v-model="item" @input="$emit('search', item)">
 </template>
 
 <script>
@@ -7,6 +7,12 @@
 
 export default {
   name: 'PokemonSearch',
+
+  data() {
+    return {
+      item: '',
+    }
+  }
 
 }
 </script>

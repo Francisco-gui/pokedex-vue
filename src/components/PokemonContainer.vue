@@ -1,6 +1,6 @@
 <template>
   <div class="container" :class="showDetail ? 'detail': ''">
-    <PokemonDetail v-if="showDetail" @details="showDetail = !showDetail" :pokemonId="pokemonId"/>
+    <PokemonDetail v-if="showDetail" @details="handleDetail" :pokemonId="pokemonId"/>
     <div v-else>
       <PokemonSearch @search="searchPokemon"/>
       <h3>Pokémons</h3>
@@ -8,6 +8,7 @@
         <PokemonCard v-for="pokemon in pokemons" :key="pokemon.id" :pokemon="pokemon" @showDetail="showPokemonDetail"/>
       </div>
     </div>
+    <div v-observe-visibility="handleNextData"></div>
   </div>
 </template>
 
@@ -30,7 +31,7 @@ export default {
   data() {
     return {
       pokemons: [],
-      nextUrl: '',
+      nextUrl: null,
       currentUrl: 'https://pokeapi.co/api/v2/pokemon/?offset=0&limit=24"',
       showDetail: false,
       pokemonId: null,
@@ -47,24 +48,38 @@ export default {
           for (const pokemon of pokemons){
             pokemon.data = await fetch(pokemon.url).then(res => res.json())
           }
-          this.pokemons = [...pokemons];
+          this.pokemons.push(...pokemons);
         })
         .catch((error) => {
           console.log(error);
         })
     },
     async searchPokemon(name) {
+      
       if(!name) {
         this.fetchData(this.currentUrl);
         return;
       }
       const pokemon = await fetch('https://pokeapi.co/api/v2/pokemon/'+name)
         .then(res => res.json())
+        .catch((error) => {
+          console.log(error);
+        })
+      if(!pokemon) return;  
       this.pokemons = [{name, data: {...pokemon}}]
     },
     showPokemonDetail(id) {
       this.showDetail = true;
       this.pokemonId = id;
+    },
+    handleNextData(isVisible) {
+      if(!this.nextUrl || this.currentUrl === this.nextUrl || this.pokemons.length === 1 || !isVisible) return;
+      this.fetchData(this.nextUrl);
+    },
+    handleDetail() {
+      this.showDetail = false;
+      this.pokemons = [];
+      this.fetchData(this.currentUrl);
     }
   },
 
