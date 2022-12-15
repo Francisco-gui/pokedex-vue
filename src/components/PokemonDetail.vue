@@ -1,5 +1,5 @@
 <template>
-  <div v-if="pokemon">
+  <div v-if="pokemon" class="detail-container">
     <div class="pokemon-img">
       <img :src="pokemon.sprites.front_default" alt="pokemon-image">
       <p>{{ pokemon.name }}</p>
@@ -66,6 +66,13 @@ export default {
 
 
 <style lang="css" scoped> 
+  .detail-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+  }
   .pokemon-img {
     width: 540px;
     height: 220px;
@@ -110,7 +117,7 @@ export default {
   }
 
   .pokemon-detail {
-    width: 540px;
+    width: 528px;
     max-height: 420px;
     margin: 0 auto;
     padding: 6px;
@@ -147,6 +154,15 @@ export default {
     color: #00A3FF;
     font-weight: 700;
     font-size: 14px;
+  }
+
+  @media (max-width: 980px) {
+    .pokemon-img {
+      width: 358px;
+    }
+    .pokemon-detail {
+      width: 346px;
+    }
   }
 
 

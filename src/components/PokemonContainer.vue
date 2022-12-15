@@ -97,6 +97,7 @@ export default {
     width: 815px;
   }
   .detail {
+    width: 100%;
     height: 100vh;
   }
   .container h3 {
@@ -107,5 +108,24 @@ export default {
   .container-box {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+  }
+  @media (max-width: 980px) {
+    .container {
+      width: 330px;
+      min-height: 100vh;
+    }
+    .container h3 {
+      display: none;
+    }
+    .container-box {
+      grid-template-columns: 153px 153px;
+      grid-gap: 23px;
+      justify-content: center;
+      align-content: center;
+      margin-top: 30px;
+    } 
+    .detail {
+      width: 100%;
+    }
   }
 </style>

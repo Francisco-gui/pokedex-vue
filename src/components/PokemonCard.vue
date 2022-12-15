@@ -72,6 +72,12 @@ export default {
     box-shadow: 0px 4px 20px #E1E1E1;
   }
 
+  @media (max-width: 980px) {
+    .card-container{
+      margin-bottom: 0;
+    }
+  }
+
   .grass {background: #08FEC3}
   .poison {background: #AF08FE;}
   .water {background: #00A3FF;}
