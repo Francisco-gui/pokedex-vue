@@ -8,7 +8,6 @@
         <PokemonCard v-for="pokemon in pokemons" :key="pokemon.id" :pokemon="pokemon" @showDetail="showPokemonDetail"/>
       </div>
     </div>
-    <div v-observe-visibility="handleNextData"></div>
   </div>
 </template>
 
@@ -35,56 +34,71 @@ export default {
       currentUrl: 'https://pokeapi.co/api/v2/pokemon/?offset=0&limit=24"',
       showDetail: false,
       pokemonId: null,
+      loading: false,
     }
   },
 
   methods: {
-    async fetchData(url) {
-      fetch(url)
-        .then(res => res.json())
-        .then(async data => {
-          this.nextUrl = data.next;
-          const pokemons = data.results;
-          for (const pokemon of pokemons){
-            pokemon.data = await fetch(pokemon.url).then(res => res.json())
-          }
-          this.pokemons.push(...pokemons);
-        })
-        .catch((error) => {
-          console.log(error);
-        })
+    async fetchPokemon(url) {
+      try {
+        const response = await fetch(url);
+        const data = await response.json();
+        this.nextUrl = data.next;
+        this.fetchPokemonDetail(data.results);
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    async fetchPokemonDetail(pokemons) {
+      try {
+        for (const pokemon of pokemons){
+          let pokemonDetail = await fetch(pokemon.url);
+          pokemon.data = await pokemonDetail.json();
+        }
+        this.pokemons.push(...pokemons);
+        this.loading = false;
+      } catch (error) {
+        console.log(error);
+      }
     },
     async searchPokemon(name) {
-      
       if(!name) {
-        this.fetchData(this.currentUrl);
+        this.fetchPokemon(this.currentUrl);
         return;
       }
-      const pokemon = await fetch('https://pokeapi.co/api/v2/pokemon/'+name)
-        .then(res => res.json())
-        .catch((error) => {
-          console.log(error);
-        })
-      if(!pokemon) return;  
-      this.pokemons = [{name, data: {...pokemon}}]
+      try {
+        const response = await fetch('https://pokeapi.co/api/v2/pokemon/'+name)
+        const pokemon = await response.json();
+        if(!pokemon) return;  
+        this.pokemons = [{name, data: {...pokemon}}]
+      } catch (error) {
+        console.log(error);
+      }
     },
     showPokemonDetail(id) {
       this.showDetail = true;
       this.pokemonId = id;
     },
-    handleNextData(isVisible) {
-      if(!this.nextUrl || this.currentUrl === this.nextUrl || this.pokemons.length === 1 || !isVisible) return;
-      this.fetchData(this.nextUrl);
+    handleNextData() {
+      if(!this.nextUrl || this.currentUrl === this.nextUrl || this.pokemons.length === 1) return;
+      this.fetchPokemon(this.nextUrl);
     },
     handleDetail() {
       this.showDetail = false;
       this.pokemons = [];
-      this.fetchData(this.currentUrl);
-    }
+      this.fetchPokemon(this.currentUrl);
+    },
+    handleScroll() {
+      if (window.scrollY + window.innerHeight >= document.body.scrollHeight - 50 && !this.loading) {
+        this.loading = true;
+        this.handleNextData();
+      }
+    }  
   },
 
   mounted() {
-    this.fetchData(this.currentUrl);
+    this.fetchPokemon(this.currentUrl);
+    window.addEventListener('scroll', this.handleScroll)
   }
 
   
