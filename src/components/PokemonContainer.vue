@@ -8,6 +8,7 @@
         <PokemonCard v-for="pokemon in pokemons" :key="pokemon.id" :pokemon="pokemon" @showDetail="showPokemonDetail"/>
       </div>
     </div>
+    <PageLoader :loading="loading" />
   </div>
 </template>
 
@@ -16,6 +17,7 @@
 import PokemonCard from './PokemonCard.vue'
 import PokemonSearch from './PokemonSearch.vue'
 import PokemonDetail from './PokemonDetail.vue'
+import PageLoader from './PageLoader.vue'
 
 
 export default {
@@ -25,6 +27,7 @@ export default {
     PokemonCard,
     PokemonSearch,
     PokemonDetail,
+    PageLoader,
   },
 
   data() {
@@ -41,6 +44,7 @@ export default {
   methods: {
     async fetchPokemon(url) {
       try {
+        this.loading = true;
         const response = await fetch(url);
         const data = await response.json();
         this.nextUrl = data.next;
@@ -56,10 +60,10 @@ export default {
           pokemon.data = await pokemonDetail.json();
         }
         this.pokemons.push(...pokemons);
-        this.loading = false;
       } catch (error) {
         console.log(error);
       }
+      this.loading = false;
     },
     async searchPokemon(name) {
       if(!name) {
@@ -90,7 +94,6 @@ export default {
     },
     handleScroll() {
       if (window.scrollY + window.innerHeight >= document.body.scrollHeight - 50 && !this.loading) {
-        this.loading = true;
         this.handleNextData();
       }
     }  
